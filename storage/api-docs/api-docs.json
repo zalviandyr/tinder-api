@@ -1,0 +1,369 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Tinder API",
+        "description": "API documentation for the Tinder-style matching service.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/api/action": {
+            "get": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "List actions by device identifier",
+                "operationId": "actions.index",
+                "parameters": [
+                    {
+                        "name": "device_id",
+                        "in": "query",
+                        "description": "Device identifier associated with the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Actions retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Action"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Create or update an action",
+                "operationId": "actions.store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ActionCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Action stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Action"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/action/destroy-by-person": {
+            "delete": {
+                "tags": [
+                    "Actions"
+                ],
+                "summary": "Delete an action matching the provided user and person",
+                "operationId": "actions.destroyByPerson",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ActionDeleteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Action deleted"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/person": {
+            "get": {
+                "tags": [
+                    "Persons"
+                ],
+                "summary": "List persons",
+                "operationId": "persons.index",
+                "responses": {
+                    "200": {
+                        "description": "Persons collection",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Person"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register a user device",
+                "operationId": "users.store",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Action": {
+                "required": [
+                    "id",
+                    "person_id",
+                    "user_id",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "55555555-5555-4555-8555-555555555555"
+                    },
+                    "person_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "11111111-1111-4111-8111-111111111111"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "44444444-4444-4444-8444-444444444444"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "LIKE",
+                            "DISLIKE"
+                        ],
+                        "example": "LIKE"
+                    },
+                    "person": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ActionCreateRequest": {
+                "required": [
+                    "person_id",
+                    "user_id",
+                    "status"
+                ],
+                "properties": {
+                    "person_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "LIKE",
+                            "DISLIKE"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "ActionDeleteRequest": {
+                "required": [
+                    "person_id",
+                    "user_id"
+                ],
+                "properties": {
+                    "person_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Person": {
+                "required": [
+                    "id",
+                    "name",
+                    "picture",
+                    "location",
+                    "age",
+                    "distance"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "11111111-1111-4111-8111-111111111111"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Alex Summers"
+                    },
+                    "picture": {
+                        "type": "string",
+                        "format": "uri",
+                        "example": "https://example.com/images/alex-summers.jpg"
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Jakarta"
+                    },
+                    "age": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 27
+                    },
+                    "distance": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "required": [
+                    "id",
+                    "device_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "44444444-4444-4444-8444-444444444444"
+                    },
+                    "device_id": {
+                        "type": "string",
+                        "example": "DEVICE-1234567890"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserCreateRequest": {
+                "required": [
+                    "device_id"
+                ],
+                "properties": {
+                    "device_id": {
+                        "type": "string",
+                        "example": "DEVICE-1234567890"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Persons",
+            "description": "Operations related to people profiles"
+        },
+        {
+            "name": "Actions",
+            "description": "Operations related to swipe actions"
+        },
+        {
+            "name": "Users",
+            "description": "Operations related to application users"
+        }
+    ]
+}
