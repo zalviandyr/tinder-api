@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\PersonController;
-use Illuminate\Support\Facades\Route;
+use Spatie\RouteDiscovery\Discovery\Discover;
 
-Route::apiResource('persons', PersonController::class)
-    ->only(['index']);
+Discover::controllers()->in(app_path('Http/Controllers/Api'));

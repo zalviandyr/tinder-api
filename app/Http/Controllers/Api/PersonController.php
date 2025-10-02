@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 
 class PersonController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return Person::all();
