@@ -9,6 +9,10 @@
         {
             "url": "http://localhost",
             "description": "Local development server"
+        },
+        {
+            "url": "https://tinder-api.therocketpunch.my.id",
+            "description": "Production server"
         }
     ],
     "paths": {

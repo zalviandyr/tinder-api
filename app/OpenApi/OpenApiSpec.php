@@ -13,6 +13,10 @@ use OpenApi\Attributes as OA;
     url: 'http://localhost',
     description: 'Local development server'
 )]
+#[OA\Server(
+    url: 'https://tinder-api.therocketpunch.my.id',
+    description: 'Production server'
+)]
 #[OA\Tag(name: 'Persons', description: 'Operations related to people profiles')]
 #[OA\Tag(name: 'Actions', description: 'Operations related to swipe actions')]
 #[OA\Tag(name: 'Users', description: 'Operations related to application users')]
